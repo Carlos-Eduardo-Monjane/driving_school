@@ -1,0 +1,1 @@
+<img id="logo" src="{{asset('img/acfinance.png')}}" {{ $attributes }} />
