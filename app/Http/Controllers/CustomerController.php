@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\User;
+use App\Models\TipoCartaConducao;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -44,6 +45,7 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
+       
         $isEdit = !empty($request->id);
 
         $request->validate([
@@ -54,6 +56,9 @@ class CustomerController extends Controller
 
         $customer = $isEdit ? Customer::find($request->id) : new Customer();
 
+        $tipoCartaConducao = TipoCartaConducao::find($request->carta);
+
+
         $customer->full_name = $request->full_name;
         $customer->email = $request->email;
         $customer->nic = $request->nic;
@@ -62,6 +67,15 @@ class CustomerController extends Controller
         $customer->address_bus = $request->address_bus;
         $customer->profession = $request->profession;
         $customer->phone_num = $request->phone_num;
+        $customer->carta = $request->carta;
+
+
+        if ($tipoCartaConducao) {
+            $customer->custo_total = $tipoCartaConducao->custo;
+            $customer->carta_nome = $tipoCartaConducao->name;
+
+            $customer->pendente = $tipoCartaConducao->custo;
+        }
         $customer->id_user_login = Auth::user()->id;
 
         $customer->save();
@@ -79,6 +93,20 @@ class CustomerController extends Controller
     {
         return view('customers.show', compact('customer'));
     }
+
+
+
+public function showAluno($id)
+{
+    $aluno = Customer::find($id);
+
+    if (!$aluno) {
+        return response()->json(['error' => 'Aluno não encontrado'], 404);
+    }
+
+    return response()->json(['aluno' => $aluno]);
+}
+
 
     /**
      * Show the form for editing the specified resource.

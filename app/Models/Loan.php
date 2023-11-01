@@ -41,7 +41,7 @@ class Loan extends Model
     {
         return [
             [
-                'label' => 'Cliente',
+                'label' => 'aluno',
                 'name' => 'customer_id',
                 'type' => 'select',
                 'selectOptions' => Customer::all(),

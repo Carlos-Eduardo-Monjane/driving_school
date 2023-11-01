@@ -12,7 +12,7 @@ use App\Libraries\Common;
     <p>Tel: +258 87 44 85 040</p>
     <p>Faturado em: {{$payment->created_at}}</p>
     <center> <p>----------------------------------</p> </center>
-    <p>Cliente: {{$payment->loan->customer->full_name}}</p>
+    <p>aluno: {{$payment->loan->customer->full_name}}</p>
     <p>Nº do Empréstimo: #{{$payment->loan->id}}</p>
     <p>Valor do empréstimo: {{$payment->loan->loan_amount}}</p>
     <p>Diário: {{$payment->loan->daily_rental}} MZN</p>

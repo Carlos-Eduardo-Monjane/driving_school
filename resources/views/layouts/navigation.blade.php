@@ -11,10 +11,56 @@ use Illuminate\Support\Str; ?>
     </button>
 
     <!-- Topbar Navbar -->
-    <ul class="navbar-nav ml-auto">
+    <ul class="navbar-nav">
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('dashboard') }}">
+                <span class="btn btn-dark">Início</span>
+            </a>
+        </li>
 
         <div class="topbar-divider d-none d-sm-block"></div>
 
+        <!-- Botão Novo Aluno -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('customers.create') }}">
+                <span class="btn btn-danger">Novo Aluno</span>
+            </a>
+        </li>
+
+        <div class="topbar-divider d-none d-sm-block"></div>
+        <!-- Botão Lista de Alunos -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('customers.index') }}">
+                
+                <span class="btn btn-danger">Lista de Alunos</span>
+            </a>
+        </li>
+
+        <div class="topbar-divider d-none d-sm-block"></div>
+        
+        <!-- Botão  de Novo Pagamentos -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('payments.create') }}">
+                <span class="btn btn-danger">Fazer Pagamento</span>
+            </a>
+        </li>
+
+        <!-- Botão Todos os Pagamentos -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('payments.index') }}">
+                <span class="btn btn-danger">Todos Pagamentos</span>
+            </a>
+        </li>
+
+        <div class="topbar-divider d-none d-sm-block"></div>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('tipos_carta_conducao.index') }}">
+                <span class="btn btn-info">Configurações</span>
+            </a>
+        </li>
+
+        <div class="topbar-divider d-none d-sm-block"></div>
         <!-- Nav Item - User Information -->
         <li class="nav-item dropdown no-arrow">
             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

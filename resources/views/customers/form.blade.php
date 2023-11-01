@@ -8,12 +8,12 @@ $isEdit = !empty($customer);
 
 <x-app-layout>
     <x-slot name="title">
-        @if(!$isEdit)Criar um @else Editar @endif cliente
+        @if(!$isEdit)Registrar um @else Editar o @endif aluno
     </x-slot>
 
     @if (session('status'))
     <div class="alert alert-success">
-        O cliente foi @if(!$isEdit) criado com sucesso. @else editado com sucesso. @endif <u><a href="{{route('customers.index')}}">Ver a lista</a></u>
+        O aluno foi @if(!$isEdit) criado com sucesso. @else editado com sucesso. @endif <u><a href="{{route('customers.index')}}">Ver a lista</a></u>
     </div>
     @endif
 
@@ -35,7 +35,19 @@ $isEdit = !empty($customer);
                                 <label class="col-form-label">{{@$field['label']}}</label>
                             </div>
                             <div class="col">
-                                <input class="form-control @error($field['name']) border border-danger @enderror" name="{{$field['name']}}" {{@$field['attributes']}} value="@if($isEdit){{ $customer[$field['name']] }}@else{{ old($field['name']) }}@endif">
+                                @switch(@$field['type'])
+                                @case('select')
+                                <select class="form-control @error($field['name']) border border-danger @enderror" name="{{$field['name']}}" {{@$field['attributes']}} value="{{ old($field['name'] , @$loan[$field['name']]) }}">
+                                    <option value="">Selecionar {{@$field['label']}}</option>
+                                    @foreach($field['selectOptions'] as $option)
+                                    <option value="{{$option->id}}" @if($isEdit && $option->name == $loan[$field['name']] || $option->name == old($field['name']) ){{ 'selected' }}@endif>{{$option['name']}} - {{$option['custo']}} MZN</option>
+                                    @endforeach
+                                </select>
+                                
+                                @break
+                                @default
+                                <input class="form-control @error($field['name']) border border-danger @enderror" name="{{$field['name']}}" type="{{@$field['type']}}" {{@$field['attributes']}} @if(!in_array($field['name'], ['proof_doc'])) value="{{ old($field['name'] , @$loan[$field['name']]) }}" @endif>
+                                @endswitch
                             </div>
                         </div>
                         @endforeach

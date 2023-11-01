@@ -46,9 +46,9 @@ use App\Libraries\Common;
         <div class="col-8">
             <div class="card">
                 <div class="card-header">
-                    <h6 class="font-weight-bold text-primary">Detalhes do cliente</h6>
+                    <h6 class="font-weight-bold text-primary">Detalhes do aluno</h6>
                 </div>
-                <div class="card-body">
+                {{-- <div class="card-body">
                     @foreach(Customer::entityFields() as $field)
                     <div class="row">
                         <div class="col-12 col-md-3">
@@ -59,7 +59,7 @@ use App\Libraries\Common;
                         </div>
                     </div>
                     @endforeach
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>

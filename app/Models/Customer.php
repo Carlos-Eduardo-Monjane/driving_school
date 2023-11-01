@@ -38,22 +38,47 @@ class Customer extends Model
                 'name' => 'address'
             ],
             [
-                'label' => 'Endereço do negócio',
-                'name' => 'address_bus'
+                'label' => 'Carta de condução',
+                'name' => 'carta',
+                'type' => 'select',
+                'selectOptions' => TipoCartaConducao::all(),
+                'attributes' => 'required'
+            ],
+            
+            [
+                'label' => 'Telefone',
+                'name' => 'phone_num'
             ],
             [
                 'label' => 'Profissão',
                 'name' => 'profession'
             ],
             [
-                'label' => 'Telefone',
-                'name' => 'phone_num'
+                'label' => 'Observações',
+                'name' => 'address_bus'
             ],
         ];
     }
+
+    public static function datatables()
+    {
+    return DataTable::of(self::query())
+        ->addColumn('carta', function (Customer $customer) {
+            return $customer->tipoCartaConducao->name;
+        })
+        ->make(true);
+    }
+
 
     public function loans()
     {
         return $this->hasMany(Loan::class);
     }
+
+    public function tipoCartaConducao()
+    {
+        return $this->belongsTo(TipoCartaConducao::class, 'carta');
+    }
+    
+
 }

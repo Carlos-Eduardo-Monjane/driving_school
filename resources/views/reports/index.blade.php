@@ -16,7 +16,7 @@
         <thead>
           <tr>
             <th>#</th>
-            <th>Nome do cliente</th>
+            <th>Nome do aluno</th>
             <th>Ultimo pagamento</th>
             <th>Valor devido</th>
             <th>Valor do empréstimo</th>

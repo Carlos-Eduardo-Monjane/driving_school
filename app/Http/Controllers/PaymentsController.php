@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Loan;
 use App\Models\Payment;
 use App\Models\User;
+use App\Models\Customer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,17 +26,8 @@ class PaymentsController extends Controller
 
         $user = User::find(Auth::id());
 
-        $payments = Payment::with('rep', 'loan');
+        $payments = Payment::all();
 
-        if ($request->has('from') && $request->has('to'))
-            $payments = $payments->whereBetween('created_at', ["$request->from 00:00:00", "$request->to 23:59:59"]);
-
-        if ($request->has('rep_id'))
-            $payments = $payments->whereHas('rep', function ($q) use ($request) {
-                $q->where('id', $request->rep_id);
-            });
-
-        $payments = $payments->get();
 
         return compact('payments');
     }
@@ -47,7 +39,12 @@ class PaymentsController extends Controller
      */
     public function create()
     {
-        return view('payments.form');
+        // Obtenha a lista de alunos para preencher o campo de seleção
+        $alunos = Customer::all(); // Ou outra forma de obter a lista de alunos
+    
+        return view('payments.form', [
+            'alunos' => $alunos, // Passe a lista de alunos para a view
+        ]);
     }
 
     /**
@@ -58,29 +55,42 @@ class PaymentsController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request);
+        // return;
+  
         $isEdit = !empty($request->id);
 
         $request->validate([
-            'loan_id' => 'required',
-            'rep_id' => 'required',
             'amount' => 'required',
         ]);
 
         $payment = $isEdit ? Payment::find($request->id) : new Payment();
 
-        $payment->loan_id = $request->loan_id;
+        $payment->aluno_id = $request->aluno_id;
         $payment->amount = $request->amount;
-        $payment->rep_id = $request->rep_id;
+        $payment->obs = $request->obs;
         $payment->id_user_login = Auth::user()->id;
-        
-        $loan = Loan::find($request->loan_id);
-        if($request->amount == $loan->outstanding_amount){
-            
-            $loan->is_active = 0;
-            $loan->save();
-        }
 
-        $payment->save();
+        $payment->name = $request->aluno_name;
+        $payment->carta = $request->carta;
+
+
+
+        // "total_da_carta" => "5,000.00 MZN"
+        // "total_pago" => "0.00 MZN"
+        // "total_pedente" => "0.00 MZN"
+        
+
+        if($payment->save()){
+
+           $aluno = Customer::find($request->aluno_id);
+           $aluno->pago = $aluno->pago + $request->amount;
+           $aluno->pendente = $aluno->pendente - $request->amount;
+           $aluno->save();
+
+        }else{
+            return redirect()->back()->with('status', 'Erro');
+        }
 
         return redirect()->back()->with('status', $payment);
     }
@@ -106,6 +116,17 @@ class PaymentsController extends Controller
     {
         return view('payments.form', compact('payment'));
     }
+
+    public function edit1(Payment $payment)
+{
+    // Obtenha a lista de alunos para preencher o campo de seleção
+    $alunos = Customer::all(); // Ou outra forma de obter a lista de alunos
+
+    return view('payments.edit', [
+        'payment' => $payment, // Passe o pagamento a ser editado para a view
+        'alunos' => $alunos, // Passe a lista de alunos para a view
+    ]);
+}
 
     /**
      * Update the specified resource in storage.

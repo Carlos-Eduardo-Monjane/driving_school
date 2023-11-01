@@ -24,40 +24,15 @@ use App\Models\User;
   <div class="card">
     <div class="card-body">
 
-      <form id="payment-filter-form" action="">
-        @csrf
-
-        <div class="row mb-3">
-          @role('admin')
-          <div class="col-3">
-            <select class="form-control" name="rep_id">
-              <option value="">Filtrar por promotor</option>
-              @foreach(User::whereRoleIs('rep')->get() as $rep)
-              <option value="{{$rep->id}}" @if(Request::get('rep_id')==$rep->id) selected @endif>{{$rep->name}}</option>
-              @endforeach
-            </select>
-          </div>
-          @endrole
-          
-          <div class="col">
-            <div class="form-check form-check-inline">
-              <label class="mx-2" for="from">De</label>
-              <input class="form-control" id="from" name="from" value="{{ Request::get('from') }}" autocomplete="off">
-              <label class="mx-2" for="to">a</label>
-              <input class="form-control" id="to" name="to" value="{{ Request::get('to') }}" autocomplete="off">
-            </div>
-          </div>
-        </div>
-      </form>
-
+      
       <table id="payment-list" class="display">
         <thead>
           <tr>
-            <th>#</th>
-            <th>Valor</th>
+            <th>Ficha Nr</th>
+            <th>Aluno</th>
+            <th>Montante</th>
             <th>Pago em</th>
-            <th>Diário de Empréstimo</th>
-            <th>Nome do promotor</th>
+            <th>Observações</th>
           </tr>
         </thead>
         <tbody>
@@ -103,7 +78,7 @@ use App\Models\User;
 
 		      //for(var i=1; i<=4;i++)
 		      //{
-		        var i=1;
+		        var i=2;
 		        
 		      	sum = api.column(i, {page:'current'}).data().sum();
 		      	//to format this sum
@@ -115,8 +90,14 @@ use App\Models\User;
 		    },
         
         columns: [{
-            data: 'id'
+            data: 'aluno_id'
           },
+          {
+            data: 'name',
+            className: 'dt-body-left',
+            render: $.fn.dataTable.render.number(',', '.', 2, 'MZN ')
+          },
+
           {
             data: 'amount',
             className: 'dt-body-right',
@@ -126,12 +107,7 @@ use App\Models\User;
             data: 'created_at'
           },
           {
-            data: 'loan.rental',
-            className: 'dt-body-right',
-            render: $.fn.dataTable.render.number(',', '.', 2, 'MZN ')
-          },
-          {
-            data: 'rep.name'
+            data: 'obs'
           },
         ]
       });

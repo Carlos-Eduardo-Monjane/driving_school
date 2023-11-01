@@ -22,7 +22,7 @@
         <thead>
           <tr>
             <th>#</th>
-            <th>Cliente</th>
+            <th>aluno</th>
             <th>Credito</th>
             <th>A pagar</th>
             <th>Valor Pedente</th>

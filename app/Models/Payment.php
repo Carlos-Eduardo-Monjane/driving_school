@@ -15,6 +15,8 @@ class Payment extends Model
     use HasFactory;
     use SoftDeletes;
 
+    protected $table = 'pagamentos'; 
+
     protected $casts = [
         'amount' => 'float',
     ];
@@ -30,38 +32,30 @@ class Payment extends Model
     }
 
     public static function entityFields()
-    {
-        return [
-            [
-                'label' => 'Nº do empréstimo',
-                'name' => 'loan_id',
-                'type' => 'select',
-                'selectOptions' => Loan::all(),
-                'selectOptionNameField' => 'id',
-                'attributes' => 'required'
-            ],
-            [
-                'label' => 'Valor',
-                'name' => 'amount',
-                'attributes' => 'required mask-money'
-            ],
-            [
-                'label' => 'Promotor',
-                'name' => 'rep_id',
-                'type' => 'select',
-                'selectOptions' => User::whereRoleIs('rep')->get(),
-                'selectOptionNameField' => 'full_name',
-                'attributes' => 'required'
-            ],
-            [
-                'label' => 'Observação',
-                'name' => 'obs',
-                'type' => 'text',
-                'attributes' => ''
-            ],
-        ];
-    }
+{
+    return [
+        [
+            'label' => 'Aluno',
+            'name' => 'aluno_id',
+            'type' => 'select',
+            'selectOptions' => Customer::all(),
+            'attributes' => 'required'
+        ],
+        [
+            'label' => 'Montante',
+            'name' => 'amount',
+            'attributes' => 'required mask-money'
+        ],
+        [
+            'label' => 'Observação',
+            'name' => 'obs',
+            'type' => 'text',
+            'attributes' => ''
+        ],
+    ];
+}
 
+ 
     public function getCreatedAtAttribute($value)
     {
         return Carbon::parse($value)->format("Y-m-d H:i:s");

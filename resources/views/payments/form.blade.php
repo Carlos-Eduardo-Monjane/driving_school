@@ -44,16 +44,20 @@ $isEdit = !empty($payment);
                             <div class="col">
                                 @switch(@$field['type'])
                                 @case('select')
-                                <select class="form-control @error($field['name']) border border-danger @enderror" name="{{$field['name']}}" {{@$field['attributes']}} value="{{ old($field['name'] , @$payment[$field['name']]) }}">
+                                <select class="form-control @error($field['name']) border border-danger @enderror" name="{{$field['name']}}" {{@$field['attributes']}}>
                                     <option value="">Selecionar {{@$field['label']}}</option>
                                     @foreach($field['selectOptions'] as $option)
-                                    <option value="{{$option->id}}" @if($isEdit && $option->id == $payment[$field['name']] || $option->id == old($field['name']) ){{ 'selected' }}@endif>{{$option[$field['selectOptionNameField']]}}</option>
+                                        <option value="{{$option->id}}" @if($isEdit && $option->id == $payment[$field['name']] || $option->id == old($field['name'])){{ 'selected' }}@endif>
+                                        
+                                            {{$option->id}} - {{$option->full_name}}
+                                        </option>
                                     @endforeach
                                 </select>
                                 @break
                                 @default
-                                <input class="form-control @error($field['name']) border border-danger @enderror" name="{{$field['name']}}" type="{{@$field['type']}}" {{@$field['attributes']}} @if(!in_array($field['name'], ['proof_doc'])) value="{{ old($field['name'] , @$payment[$field['name']]) }}" @endif>
-                                @endswitch
+                                <input class="form-control @error($field['name']) border border-danger @enderror" name="{{$field['name']}}" type="{{@$field['type']}}" {{@$field['attributes']}} value="{{ old($field['name'], @$payment[$field['name']]) }}">
+                            @endswitch
+                            
                             </div>
                         </div>
                         @endforeach
@@ -71,53 +75,38 @@ $isEdit = !empty($payment);
                     </div>
                 </div>
             </div>
-            <div class="col-5">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Detalhes do cliente</h5>
-                        <hr class="mb-2" />
-                        @foreach(Customer::entityFields() as $field)
-                        <div class="row">
-                            <div class="col-12 col-md-3">
-                                <label class="col-form-label font-weight-bold">{{ $field['label'] }}</label>
-                            </div>
-                            <div class="col mt-2" data-customer-field="{{ $field['name'] }}">
-                                : [Selecione Nº do Empréstimo]
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
                        <div class="col-3">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Detalhes do emprestimo</h5>
+                        <h5 class="card-title">Dados financeiros</h5>
                         <hr class="mb-2" />
                         
                         <div class="row">
                             <div class="col-12 col-md-3">
-                                <label class="col-form-label font-weight-bold">Total Emprestado</label>
+                                <label class="col-form-label font-weight-bold">Total da carta</label>
                             </div>
                             <div class="col mt-2">
-                                <input readonly type="text" placeholder="--" name="total_credito">
+                                <input readonly type="text" placeholder="--" name="total_da_carta">
                             </div>
                             
                              <div class="col-12 col-md-3">
-                                <label class="col-form-label font-weight-bold">Total a Pagar</label>
+                                <label class="col-form-label font-weight-bold">Total pago</label>
                             </div>
                             <div class="col mt-2">
-                                <input readonly type="text" placeholder="--" name="total_a_pagar">
+                                <input readonly type="text" placeholder="--" name="total_pago">
                             </div>
                             
                              <div class="col-12 col-md-3">
-                                <label class="col-form-label font-weight-bold">Total Pedente</label>
+                                <label class="col-form-label font-weight-bold">Total pedente</label>
                             </div>
                             <div class="col mt-2">
                                 <input readonly type="text" placeholder="--" name="total_pedente">
                             </div>
                         </div>
-                        
+
+                        {{-- Hidden --}}
+                        <input readonly type="hidden" placeholder="--" name="aluno_name">
+                        <input readonly type="hidden" placeholder="--" name="carta">
                     </div>
                 </div>
             </div>
@@ -146,33 +135,40 @@ $isEdit = !empty($payment);
 
             });
 
-            $('[name="loan_id"]').change(function() {
+            $('[name="aluno_id"]').change(function() {
+
                 $('[data-customer-field]').each(function() {
                     $(this).html('Processando...');
                 });
                 
-                console.log("ID: CLIENTE");
+                console.log("ID: aluno");
                 console.log($(this).val());
-                var id_emp = $(this).val();
+                var id_aluno = $(this).val();
+
+                var url = "{{ route('aluno.show', ':id') }}".replace(':id', id_aluno);
 
                 $.ajax({
-                    url: "{{route('loans.index')}}/customer/" + id_emp,
+                    url: url,
                     success: function(data) {
                     console.log(data);
-                        $('[data-customer-field]').each(function() {
-                            $(this).html(data['customer'][$(this).data('customer-field')]);
-                        });
+                    console.log(data.aluno);
+                    data = data.aluno;
+
+                        // $('[data-customer-field]').each(function() {
+                        //     $(this).html(data['customer'][$(this).data('customer-field')]);
+                        // });
                 
                         		      	
-		      var formatedTPagar = parseFloat(data.total_to_be_paid).toLocaleString(undefined, {minimumFractionDigits:2});
-		      var formatedTCredito = parseFloat(data.loan_amount).toLocaleString(undefined, {minimumFractionDigits:2});
-		      var formatedTPedente = parseFloat(data.outstanding_amount).toLocaleString(undefined, {minimumFractionDigits:2});
+		      var custo_total = parseFloat(data.custo_total).toLocaleString(undefined, {minimumFractionDigits:2});
+		      var total_pago = parseFloat(data.pago).toLocaleString(undefined, {minimumFractionDigits:2});
+		      var total_pendente = parseFloat(data.pendente).toLocaleString(undefined, {minimumFractionDigits:2});
+                        $('[name="total_da_carta"').val(custo_total+' MZN');
+                        $('[name="total_pago"').val(total_pago+' MZN');
+                        $('[name="total_pedente"').val(total_pendente+' MZN');
+                        $('[name="amount"').val(total_pendente);
+                        $('[name="aluno_name"').val(data.full_name);
+                        $('[name="carta"').val(data.carta_nome);
                         
-                        $('[name="total_a_pagar"').val(formatedTPagar+' MZN');
-                        $('[name="total_credito"').val(formatedTCredito+' MZN');
-                        $('[name="total_pedente"').val(formatedTPedente+' MZN');
-                        $('[name="rep_id"').val(data.rep_id);
-                        $('[name="amount"').val(formatedTPedente);
                         
                         // console.log(data.customer_id);
                     }
@@ -181,8 +177,8 @@ $isEdit = !empty($payment);
                 
             });
 
-             <?php if (Request::has('loan-id')) { ?>
-                $('[name="loan_id"]').val("{{Request::get('loan-id')}}").trigger('change');
+             <?php if (Request::has('aluno-id')) { ?>
+                $('[name="aluno_id"]').val("{{Request::get('aluno-id')}}").trigger('change');
             <?php } ?>
         });
     </script>

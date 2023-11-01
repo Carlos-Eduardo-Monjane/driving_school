@@ -73,7 +73,7 @@ use Illuminate\Support\Facades\Auth;
         <div class="col-8">
             <div class="card">
                 <div class="card-header">
-                    <h6 class="font-weight-bold text-primary">Detalhes do cliente</h6>
+                    <h6 class="font-weight-bold text-primary">Detalhes do aluno</h6>
                 </div>
                 <div class="card-body">
                     @foreach(Customer::entityFields() as $field)

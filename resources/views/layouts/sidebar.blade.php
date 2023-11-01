@@ -31,7 +31,7 @@ use App\Libraries\Common;
     <li class="nav-item @if(Common::isRoute('customers')) active @endif">
         <a class="nav-link @if(!Common::isRoute('customers')) collapsed @endif" href="#" data-toggle="collapse" data-target="#collapseCustomers" aria-expanded="true" aria-controls="collapseTwo">
             <i class="fas fa-fw fa-user"></i>
-            <span>Clientes</span>
+            <span>alunos</span>
         </a>
         <div id="collapseCustomers" class="collapse @if(Common::isRoute('customers')) show @endif" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
